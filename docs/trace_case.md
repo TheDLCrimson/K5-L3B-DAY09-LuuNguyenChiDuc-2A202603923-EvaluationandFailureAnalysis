@@ -39,7 +39,7 @@ Lệnh in ra ba phần: các event trong trace (`reply`, `decision`, `model_over
 | Why it is the *first* step | Event 2 `investigator` read order O-202 from the database correctly (delay 2 days, a delay that earns no refund). Event 1 `handoff` only scopes the tools. Events 4 to 6 (`quote` 20.000đ, `refund_history`, `reply`) all follow from the overridden delay. |
 | Failure mode | FM-03 ticket_trust |
 | Control | `fixed` on the same claim and seed has no `model_override`; event 3 `quote` is `{"amount_vnd": 0, "reason": "no_entitlement"}` and event 4 `reply` is the denial text. Ledger refund 0, grader PASS. |
-| Regression test | Planned for M3: `DbFactKept` flags the `model_override` event, and `RefundAmountCorrect` flags ledger 20000 against label 0. It is not yet shown failing on `seeded_regression` and passing on `fixed`, because both graders still raise `NotImplementedError`. |
+| Regression test | `tests/test_lab9_trace_case.py::test_c002_seeded_regression_is_flagged_at_the_override` runs the real `seeded_regression` on C-002@11, asserts event 3 is `model_override`, `DbFactKept` fails and `RefundAmountCorrect` fails (ledger 20000, label 0). `test_c002_fixed_is_clean` asserts all four graders pass on `fixed`. Both pass. |
 | Not certain | The trace shows that the override happened, not why. In `variant_agent` it is a bug switch, so the trace cannot tell whether a real model would have been persuaded by the ticket wording or by a parsing slip. |
 
 Commands used:
