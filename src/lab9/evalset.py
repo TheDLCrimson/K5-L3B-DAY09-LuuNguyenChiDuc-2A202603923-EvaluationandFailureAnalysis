@@ -58,7 +58,9 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
 
 
 def sha12(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()[:12]
+    # Hash the text with LF line endings: Windows writes CRLF and git (autocrlf) commits LF, so
+    # hashing raw bytes gives a different eval-set SHA on the CI runner than on the author's machine.
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()[:12]
 
 
 def build(source: Path = SOURCE) -> tuple[int, int]:

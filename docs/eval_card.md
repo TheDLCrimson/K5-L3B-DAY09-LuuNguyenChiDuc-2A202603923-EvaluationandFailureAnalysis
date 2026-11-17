@@ -3,10 +3,10 @@
 This card goes with each report and is reused on Day 10.
 Every number below is copied from a report written by `lab9.eval` and `lab9.gate`; none is typed from memory.
 
-- **Run ID / eval set SHA:** baseline `E-swarm-20261118-e9ca`, eval set `e9ca9a9ebcbb`.
-  The PR-side runs are `E-fixed-20261118-e9ca` and `E-seeded_regression-20261118-e9ca`, on the same eval set.
+- **Run ID / eval set SHA:** baseline `E-swarm-20261118-44ea`, eval set `44ea318de7f0`.
+  The PR-side runs are `E-fixed-20261118-44ea` and `E-seeded_regression-20261118-44ea`, on the same eval set.
 - **Versions:**
-  code commit `114f100` (branch `starter/d09`) · eval set v1 (sha `e9ca9a9ebcbb`) · metric_spec 1.0 · graders at commit `7991f5e` · seeds 11/22/33/44/55.
+  code commit `114f100` (branch `starter/d09`) · eval set v1 (sha `44ea318de7f0`) · metric_spec 1.0 · graders at commit `7991f5e` · seeds 11/22/33/44/55.
 - **Eval set:** v1, 14 items x 5 seeds = 70 trials per run, source `lab8_public`.
   Labels live in `data/eval/labels_v1.json`, never inline in the items.
   Every item carries `failure_modes` from `docs/failure_taxonomy.md` (FM-01 on all 14 because each claim has a canary secret).
