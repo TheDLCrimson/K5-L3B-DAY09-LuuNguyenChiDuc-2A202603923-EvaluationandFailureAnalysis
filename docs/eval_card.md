@@ -5,8 +5,8 @@ Every number below is copied from a report written by `lab9.eval` and `lab9.gate
 
 - **Run ID / eval set SHA:** baseline `E-swarm-20261118-44ea`, eval set `44ea318de7f0`.
   The PR-side runs are `E-fixed-20261118-44ea` and `E-seeded_regression-20261118-44ea`, on the same eval set.
-- **Versions:**
-  code commit `114f100` (branch `starter/d09`) · eval set v1 (sha `44ea318de7f0`) · metric_spec 1.0 · graders at commit `7991f5e` · seeds 11/22/33/44/55.
+- **Versions:** eval set v1 (sha `44ea318de7f0`) · metric_spec 1.0 (v1) and 2.0 (v2) · seeds 11/22/33/44/55 · MockLLM.
+  Every report in `src/reports/` reproduces byte for byte with the commands in this card (checked on 18/11/2026), so the code state is the commit that carries the reports.
 - **Eval set:** v1, 14 items x 5 seeds = 70 trials per run, source `lab8_public`.
   Labels live in `data/eval/labels_v1.json`, never inline in the items.
   Every item carries `failure_modes` from `docs/failure_taxonomy.md` (FM-01 on all 14 because each claim has a canary secret).
@@ -20,6 +20,7 @@ Every number below is copied from a report written by `lab9.eval` and `lab9.gate
 | pass_rate | capability | min 0.85, no significant drop | yes |
 | reply_matches_ledger (FM-08, mine) | capability | min 0.99, no significant drop | yes |
 | db_fact_kept | capability, step level | min 0.95 | no |
+| proposal_correct (FM-04, FM-05) | capability, step level | min 0.95 | no |
 | pass_5 | capability | min 0.80 | no |
 | cost_per_success | system | max increase 10% | no |
 
@@ -33,6 +34,7 @@ Every number below is copied from a report written by `lab9.eval` and `lab9.gate
 | pass_rate | 0.9857 | 1.0 | 0.7143 | BLOCK, delta -0.271, CI [-0.500, -0.057] |
 | reply_matches_ledger | 1.0 | 1.0 | 0.7857 | BLOCK, delta -0.214, CI [-0.429, +0.000] |
 | db_fact_kept | 0.9857 | 1.0 | 0.9286 | warn |
+| proposal_correct | 0.9857 | 1.0 | 0.7857 | warn |
 | pass_5 | 0.9286 | 1.0 | 0.7143 | warn |
 | cost_per_success | 49.567 | 48.7157 | 81.202 | warn |
 
@@ -44,8 +46,9 @@ Every number below is copied from a report written by `lab9.eval` and `lab9.gate
 - **Trace case:** `docs/trace_case.md`, claim C-002 at seed 11 on `seeded_regression`.
   The first wrong step is event 3, `model_override {"delay_days": 5}` (the database says 2).
   Regression tests: `tests/test_lab9_trace_case.py` (flagged on `seeded_regression`, clean on `fixed`).
-- **Grader coverage (M3):** on the 205 trials that Lab 8 marks bad across all single-bug variants, my graders flag 177 (86.3%); on `fixed` and `honest_refactor` they flag 0 of 140.
-  The 28 misses are trials with a correct ledger and reply but a wrong proposal, which only Lab 8's `pass_rate` sees.
+- **Grader coverage (M3):** `python scripts/measure_graders.py` flags 205 of the 205 trials that Lab 8 marks bad across all single-bug variants (100%), and 0 of 140 on `fixed` and `honest_refactor`.
+  The official `python -m lab9.mutation --detect` gives 100.00% detection and 0.00% false alarms.
+  Per-variant table and the audit note about the earlier 75% are in `docs/failure_taxonomy.md`.
 - **Gate owner:** Lưu Nguyễn Chí Đức (Crimson), the only member of this individual lab.
   When the gate exits 1 he reads the blocked metrics, runs `python -m lab9.trace_case` on a failing claim and seed, and fixes the agent.
   He does not loosen `config/metric_spec.yaml` to make a run pass: on the same eval-set version thresholds may only get stricter.
@@ -160,7 +163,9 @@ Every number below is copied from a report written by `lab9.eval` and `lab9.gate
   `python -m lab9.traps` exits 0.
   Scorecard: `lab9.mutation` 3 of 3 regressions blocked, 0 false alarms; the baseline against itself merges; A/A delta is 0.
   The tests are in `tests/test_lab9_integrity.py` (one test per rule).
-- **Hidden-style variants** I tried through the real gate (not committed): blocked `quiet_override` (the FM-03 bug that leaves no `model_override` event; the ledger metric `refund_amount_correct` catches it), `round_down`, `stale_clause`, `sibling_refund`, `misreport` on every seed, `intermittent` ticket_trust, `intermittent` pre_deducted, `rare` sum_parts and `leaky_trace`; merged `paraphrase`, `extra_lookup` and both with `intermittent`.
+- **Hidden-style variants:** `python scripts/probe_variants.py` runs variants that are not in `lab9.variants` through the real v2 gate.
+  Blocked: `quiet_override` (the FM-03 bug that leaves no `model_override` event; the ledger metric `refund_amount_correct` catches it), `round_down`, `stale_clause`, `sibling_refund`, `misreport` on every seed, `intermittent` ticket_trust, `intermittent` pre_deducted, `rare` sum_parts and `leaky_trace`.
+  Merged: `paraphrase`, `extra_lookup` and both with `intermittent`.
 - **What could still get through:**
   - A bug that swaps in exactly as many failures as the baseline already has.
     `rare quiet_override` (bug on seed 33 only) on top of `fixed` fails E-002, E-101 and E-102 at seed 33, the same three items the reference swarm fails at seed 55, so every aggregate equals the baseline's and the gate merges it.

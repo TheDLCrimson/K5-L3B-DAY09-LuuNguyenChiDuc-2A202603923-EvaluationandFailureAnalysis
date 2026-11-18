@@ -100,3 +100,40 @@ def test_trace_without_reply_is_not_judged():
 
     t = {**reply_trial("x", 0), "events": []}
     assert graders.ReplyMatchesLedger().evaluate(ctx(t, LABEL_REFUND)).value is True
+
+
+def proposal_trial(proposed):
+    return {"snapshot": {"refund_vnd": 0, "refund_count": 0}, "unexpected_rows": 0, "blob": "",
+            "result": {"proposal_amount": proposed}, "lab8_pass": True, "lab8_reason": None, "events": []}
+
+
+def test_proposal_correct_sees_a_wrong_proposal_the_ledger_cannot():
+    from lab9 import graders
+
+    label = {"proposal_amount": 35000, "refund_vnd": 0}
+    assert graders.ProposalCorrect().evaluate(ctx(proposal_trial(35000), label)).value is True
+    res = graders.ProposalCorrect().evaluate(ctx(proposal_trial(0), label))
+    assert res.value is False and "proposed 0" in res.reason
+    # the ledger grader is blind here: 0 refunded, label 0
+    assert graders.RefundAmountCorrect().evaluate(ctx(proposal_trial(0), label)).value is True
+
+
+def test_proposal_correct_skips_trials_without_a_proposal():
+    from lab9 import graders
+
+    assert graders.ProposalCorrect().evaluate(ctx(reply_trial("x", 0), {"refund_vnd": 0})).value is True
+    assert graders.ProposalCorrect().evaluate(ctx(proposal_trial(5), {"refund_vnd": 0})).value is True
+
+
+def test_fm05_pre_deducted_c013_is_flagged_by_the_proposal_grader():
+    from lab8.shapes import SHAPES
+    from lab9 import graders
+    from lab9.variant_agent import make_shape
+
+    SHAPES.setdefault("pre_deducted_probe", make_shape("pre_deducted_probe", {"no_override", "pre_deducted"}))
+    trial, label = run_case("pre_deducted_probe", "C-013", 11)
+    assert trial["lab8_pass"] is False and trial["snapshot"]["refund_vnd"] == 0   # ledger looks right
+    assert graders.RefundAmountCorrect().evaluate(ctx(trial, label)).value is True
+    assert graders.ProposalCorrect().evaluate(ctx(trial, label)).value is False
+    fixed, flabel = run_case("fixed", "C-013", 11)
+    assert graders.ProposalCorrect().evaluate(ctx(fixed, flabel)).value is True

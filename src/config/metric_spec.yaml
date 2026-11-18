@@ -19,3 +19,5 @@ metrics:
 # min 0.99: the swarm baseline scores 1.0 and every mismatch is a customer told the wrong amount.
   - {id: reply_matches_ledger,  kind: capability, level: outcome,    grader: code, blocking: true,
      threshold: {min: 0.99, no_significant_drop: true}}
+  # FM-05 / FM-04: the proposal itself. Lab 8's pass_rate already blocks on it; this metric says why.
+  - {id: proposal_correct,      kind: capability, level: step,       grader: code, threshold: {min: 0.95}, blocking: false}
