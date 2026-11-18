@@ -103,4 +103,37 @@ Every number below is copied from a report written by `lab9.eval` and `lab9.gate
   - The `escalation` slice has 4 items, so one failing trial moves it by 0.05; its floor is 0.90.
   - The three slice floors are tuned to the public variants.
     A hidden slice regression in a slice I do not gate (for example a new tag) would pass; the 0.95 floors leave about 3.5 points of room above 1.0 minus noise on the adversarial slice.
-  - `pass_hat_5` and the integrity checks are not part of this version yet (M6 and M7).
+  - The integrity checks are not part of this version yet (M7).
+
+## Noise and reliability (M6, 18/11/2026)
+
+- **A/A run** (`python -m lab9.mutation --spec config/metric_spec_v2.yaml --aa 66,77,88,99,110`): the reference swarm on a second seed set against the spec seeds.
+  Every metric differs by +0.0000 (`pass_rate` 0.9786 on both, `pass_hat_5` 0.8929 on both, `cost_per_success` 50.8077 on both).
+  Both seed sets contain exactly one seed with `seed % 5 == 0`, the reference swarm's built-in weakness, so the structure is identical.
+- **Why the noise band is 0 here and not with a real model:** MockLLM is deterministic, so the same agent on different seeds only changes through the one coded weakness.
+  A real LLM samples, so two runs of the same agent give different pass rates.
+  The A/A band is then above 0, and a floor inside that band blocks honest PRs at random (it fails on luck, not on a regression).
+  The floor must sit below the baseline by more than the noise band, and still above what a real regression scores.
+  I have no measured real-model band, so I do not claim one; I only know the band here is 0 and the floor must be re-chosen when the model changes.
+- **`pass_at_k` and `pass_hat_k`** (n = 5 seeds per item, c of them passing, k drawn without replacement):
+  `pass@k = 1 - C(n-c, k) / C(n, k)` is the chance that at least one of k draws passes, and `pass^k = C(c, k) / C(n, k)` is the chance that all k pass.
+  `pass^k <= pass@1 <= pass@k` always.
+  `pass^5` is the strict reliability number: one failing seed out of five makes an item score 0.
+  Baseline, mean over 28 items: `pass_at_1` 0.9786, `pass_hat_1` 0.9786, `pass_at_3` 1.0, `pass_hat_3` 0.9357, `pass_at_5` 1.0, `pass_hat_5` 0.8929.
+  The gap between `pass_at_5` (1.0) and `pass_hat_5` (0.8929) is exactly the 3 items that fail on seed 55.
+- **Floor for `pass_hat_5`:** 0.80, blocking.
+  It sits 0.09 under the baseline (about 2 to 3 items) and well above a 1-seed-in-5 bug.
+
+| Variant | `pass_hat_5` | Verdict on this metric |
+|---|---|---|
+| baseline `swarm` against itself | 0.8929 | ok, merge |
+| fixed, honest_refactor | 1.0 | ok, merge |
+| slice_regression | 0.8929 | ok (caught by the money_movement and adversarial slices) |
+| flaky_regression (rounding bug on 1 seed in 5) | 0.5714 | **BLOCK** |
+| seeded_regression | 0.6429 | BLOCK |
+
+  `flaky_regression` is also blocked by the mean `pass_rate` (CI [-0.114, -0.014]), but that CI is narrow and depends on how many items the bug touches.
+  `pass_hat_5` blocks it directly: one flaky seed zeroes every item it touches.
+- **Mutation scorecard after M6:** 3 of 3 regressions blocked, 0 false alarms.
+- **Limit that remains:** a bug that appears on 1 of 3 seeds out of only 5 is not detectable in a stable way; with 5 seeds `pass_hat_5` moves in steps of 1/28 per item, and one lucky seed can hide it.
+  I did not lower the floor to make the gate catch it.
