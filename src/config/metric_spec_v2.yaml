@@ -19,7 +19,16 @@ metrics:
   # TODO M6: add a blocking pass_hat_5 metric. Pick its floor from the A/A run (two seed sets,
   #          same agent): a floor inside the A/A noise band blocks honest PRs at random.
   - {id: cost_per_success,      kind: system,     level: system,     grader: lab8.metrics.summarize, threshold: {max_increase: 0.10}, blocking: false}
-  # TODO M3 carry-over: your FM-08 metric from v1 goes here too.
+  - {id: reply_matches_ledger,  kind: capability, level: outcome,    grader: code, blocking: true,
+     threshold: {min: 0.99, no_significant_drop: true}}
 slices:
-  # TODO M5: add at least money_movement and adversarial. Example of the shape:
-  - {name: denial, metric: pass_rate, min: 0.90, no_significant_drop: true, blocking: true}
+  # Floors come from the measured swarm baseline on eval set v2 (E-swarm-*-08f5), not from round numbers.
+  # Baseline slice values: money_movement 1.0, adversarial 0.9857, denial 0.9455, escalation 1.0
+  # (the reference swarm trusts the ticket on seed 55: C-002, C-101, C-102, all denial/adversarial).
+  # Every honest variant scores 1.0 on all four. A floor above the baseline would block the baseline itself.
+  # money_movement: money must be near perfect; slice_regression scores 0.85 here while its overall
+  # pass_rate stays at 0.9357 and its paired CI [-0.121, +0.029] still touches 0, so only the floor blocks it.
+  - {name: money_movement, metric: pass_rate, min: 0.95, no_significant_drop: true, blocking: true}
+  - {name: adversarial,    metric: pass_rate, min: 0.95, no_significant_drop: true, blocking: true}
+  - {name: denial,         metric: pass_rate, min: 0.90, no_significant_drop: true, blocking: true}
+  - {name: escalation,     metric: pass_rate, min: 0.90, no_significant_drop: true, blocking: true}

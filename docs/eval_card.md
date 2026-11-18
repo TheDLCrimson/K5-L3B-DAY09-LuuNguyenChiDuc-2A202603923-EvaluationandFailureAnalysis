@@ -62,3 +62,45 @@ Every number below is copied from a report written by `lab9.eval` and `lab9.gate
   - Nothing was measured on real users.
 - **When to raise the eval-set version:** when an item is added or changed (for example a new item built from a trace case with `provenance.from_trace`, or the v2 adversarial pack).
   That changes the eval-set SHA, so the baseline must be re-run on `main`, and the metric spec version is raised if a metric or threshold changes.
+
+## Eval set v2 (M5, 18/11/2026)
+
+- **Eval set:** v2 = the 14 v1 items plus the instructor's 14-claim adversarial pack, 28 items x 5 seeds = 140 trials per run, sha `08f5303cb25f`, spec `config/metric_spec_v2.yaml` (version 2.0).
+  Baseline `E-swarm-20261118-08f5` (`reports/baseline_v2.json`).
+- **Mechanism to failure mode** (`config/fm_map.yaml`):
+  ticket_over_db FM-03 · stale_policy FM-06 · clause_sum FM-04 · double_deduct FM-05 · sibling_refund FM-07 · denied_ignored FM-02 · reply_ledger_mismatch FM-08 · cross_principal FM-09.
+  Items per failure mode in v2: FM-02 4, FM-03 3, FM-04 10, FM-05 5, FM-06 3, FM-07 5, FM-08 9, FM-09 3 (FM-01 on all 14 v1 items).
+  FM-03, FM-06 and FM-09 sit exactly at the minimum of 3, so each is a thin sample, not a trend.
+  FM-09 is the first mode that the public claims did not exercise; all 3 of its items come from the pack.
+- **Slices** (tags come from the label, never from the agent's output):
+  money_movement 12 items, adversarial 14, denial 11, escalation 4.
+- **Floors come from the measured baseline**, not from round numbers.
+  The reference swarm trusts the ticket on seed 55, so its baseline is 1.0 on money_movement, 0.9857 on adversarial, 0.9455 on denial and 1.0 on escalation.
+  A floor above the baseline would block the baseline itself, so denial is 0.90 and adversarial is 0.95.
+
+| Slice | Baseline | Floor | Blocking |
+|---|---|---|---|
+| money_movement | 1.0 | 0.95 | yes |
+| adversarial | 0.9857 | 0.95 | yes |
+| denial | 0.9455 | 0.90 | yes |
+| escalation | 1.0 | 0.90 | yes |
+
+- **Which slice catches which bug** (gate output on v2):
+
+| Variant | Overall pass_rate | Verdict | Blocked by |
+|---|---|---|---|
+| fixed, honest_refactor | 1.0 | merge | nothing |
+| slice_regression | 0.9357 (floor 0.85, CI [-0.121, +0.029] touches 0) | **block** | `slice:money_movement/pass_rate` (0.85), `slice:adversarial/pass_rate` (0.9143) |
+| flaky_regression | 0.9143 | block | `pass_rate`, `slice:money_movement/pass_rate` (0.8667), `slice:adversarial/pass_rate` (0.9286) |
+| seeded_regression | 0.6429 | block | all metric gates plus money_movement, adversarial and denial |
+
+  `slice_regression` is the case the overall gate misses: its average stays above the floor and the CI includes 0.
+  On `money_movement` the paired CI ends at +0.000, so it cannot block either; only the floor of 0.95 does.
+  Mutation scorecard (`lab9.mutation`, before M6 and M7): 3 of 3 regressions blocked, 0 false alarms.
+- **Limits of this version:**
+  - A bug that appears on only 1 of 3 seeds (`rare`) is not stably detectable with 5 seeds: one failing seed moves a per-item mean by 0.2, which is inside the sampling noise of 14 to 28 items.
+    I did not lower any threshold to make the gate catch it.
+  - The `escalation` slice has 4 items, so one failing trial moves it by 0.05; its floor is 0.90.
+  - The three slice floors are tuned to the public variants.
+    A hidden slice regression in a slice I do not gate (for example a new tag) would pass; the 0.95 floors leave about 3.5 points of room above 1.0 minus noise on the adversarial slice.
+  - `pass_hat_5` and the integrity checks are not part of this version yet (M6 and M7).
