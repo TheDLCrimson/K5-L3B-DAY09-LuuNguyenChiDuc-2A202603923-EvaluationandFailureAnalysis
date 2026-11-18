@@ -73,6 +73,23 @@ class DbFactKept(Evaluator[Any, Trial]):
         return EvaluationReason(value=not bad, reason=f"{len(bad)} override event(s)" if bad else None)
 
 
+@dataclass
+class ProposalCorrect(Evaluator[Any, Trial]):
+    """FM-05 and FM-04, step level. True means good: the amount the agent proposed to the host is the amount
+    the label says it should propose. This sees what the ledger cannot: an agent that subtracts earlier
+    refunds itself proposes 0 where the label says 35.000, the host then denies, and the ledger (0) and the
+    reply (a denial) both look right. A trial or label without a proposal amount is not judged here."""
+
+    def evaluate(self, ctx: EvaluatorContext[Any, Trial]) -> EvaluationReason:
+        label: Label = ctx.expected_output or {}
+        result = ctx.output.get("result") or {}
+        if "proposal_amount" not in label or "proposal_amount" not in result:
+            return EvaluationReason(value=True, reason="no proposal to compare")
+        got, want = result["proposal_amount"], label["proposal_amount"]
+        ok = got == want
+        return EvaluationReason(value=ok, reason=None if ok else f"proposed {got}, label says {want}")
+
+
 AMOUNT = re.compile(r"(\d{1,3}(?:\.\d{3})+|\d+)\s*(?:đ|VND|vnd)")
 
 
@@ -111,4 +128,5 @@ GRADERS: dict[str, type[Evaluator]] = {
     "refund_amount_correct": RefundAmountCorrect,
     "db_fact_kept": DbFactKept,
     "reply_matches_ledger": ReplyMatchesLedger,
+    "proposal_correct": ProposalCorrect,
 }

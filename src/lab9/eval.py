@@ -106,7 +106,8 @@ def run_eval(shape: str, spec: dict[str, Any], seeds: list[int] | None = None) -
     eval_set_sha = evalset.sha12(Path(spec["eval_set"]))
     run_id = f"E-{shape}-{date.today():%Y%m%d}-{eval_set_sha[:4]}"
     return {"run_id": run_id, "shape": shape,
-            "manifest": {"eval_set": spec["eval_set"], "eval_set_sha": eval_set_sha, "items": len(items),
+            "manifest": {"eval_set": spec["eval_set"], "eval_set_sha": eval_set_sha,
+                         "labels_sha": evalset.sha12(Path(spec["labels"])), "items": len(items),
                          "seeds": seeds, "metric_spec_version": spec["metric_spec_version"],
                          "llm": "MockLLM", "python": platform.python_version()},
             "rows": rows, "evaluator_failures": failures,

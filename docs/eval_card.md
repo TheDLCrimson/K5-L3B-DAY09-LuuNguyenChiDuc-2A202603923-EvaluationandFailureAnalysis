@@ -5,8 +5,8 @@ Every number below is copied from a report written by `lab9.eval` and `lab9.gate
 
 - **Run ID / eval set SHA:** baseline `E-swarm-20261118-44ea`, eval set `44ea318de7f0`.
   The PR-side runs are `E-fixed-20261118-44ea` and `E-seeded_regression-20261118-44ea`, on the same eval set.
-- **Versions:**
-  code commit `114f100` (branch `starter/d09`) · eval set v1 (sha `44ea318de7f0`) · metric_spec 1.0 · graders at commit `7991f5e` · seeds 11/22/33/44/55.
+- **Versions:** eval set v1 (sha `44ea318de7f0`) · metric_spec 1.0 (v1) and 2.0 (v2) · seeds 11/22/33/44/55 · MockLLM.
+  Every report in `src/reports/` reproduces byte for byte with the commands in this card (checked on 18/11/2026), so the code state is the commit that carries the reports.
 - **Eval set:** v1, 14 items x 5 seeds = 70 trials per run, source `lab8_public`.
   Labels live in `data/eval/labels_v1.json`, never inline in the items.
   Every item carries `failure_modes` from `docs/failure_taxonomy.md` (FM-01 on all 14 because each claim has a canary secret).
@@ -20,6 +20,7 @@ Every number below is copied from a report written by `lab9.eval` and `lab9.gate
 | pass_rate | capability | min 0.85, no significant drop | yes |
 | reply_matches_ledger (FM-08, mine) | capability | min 0.99, no significant drop | yes |
 | db_fact_kept | capability, step level | min 0.95 | no |
+| proposal_correct (FM-04, FM-05) | capability, step level | min 0.95 | no |
 | pass_5 | capability | min 0.80 | no |
 | cost_per_success | system | max increase 10% | no |
 
@@ -33,6 +34,7 @@ Every number below is copied from a report written by `lab9.eval` and `lab9.gate
 | pass_rate | 0.9857 | 1.0 | 0.7143 | BLOCK, delta -0.271, CI [-0.500, -0.057] |
 | reply_matches_ledger | 1.0 | 1.0 | 0.7857 | BLOCK, delta -0.214, CI [-0.429, +0.000] |
 | db_fact_kept | 0.9857 | 1.0 | 0.9286 | warn |
+| proposal_correct | 0.9857 | 1.0 | 0.7857 | warn |
 | pass_5 | 0.9286 | 1.0 | 0.7143 | warn |
 | cost_per_success | 49.567 | 48.7157 | 81.202 | warn |
 
@@ -44,8 +46,9 @@ Every number below is copied from a report written by `lab9.eval` and `lab9.gate
 - **Trace case:** `docs/trace_case.md`, claim C-002 at seed 11 on `seeded_regression`.
   The first wrong step is event 3, `model_override {"delay_days": 5}` (the database says 2).
   Regression tests: `tests/test_lab9_trace_case.py` (flagged on `seeded_regression`, clean on `fixed`).
-- **Grader coverage (M3):** on the 205 trials that Lab 8 marks bad across all single-bug variants, my graders flag 177 (86.3%); on `fixed` and `honest_refactor` they flag 0 of 140.
-  The 28 misses are trials with a correct ledger and reply but a wrong proposal, which only Lab 8's `pass_rate` sees.
+- **Grader coverage (M3):** `python scripts/measure_graders.py` flags 205 of the 205 trials that Lab 8 marks bad across all single-bug variants (100%), and 0 of 140 on `fixed` and `honest_refactor`.
+  The official `python -m lab9.mutation --detect` gives 100.00% detection and 0.00% false alarms.
+  Per-variant table and the audit note about the earlier 75% are in `docs/failure_taxonomy.md`.
 - **Gate owner:** Lưu Nguyễn Chí Đức (Crimson), the only member of this individual lab.
   When the gate exits 1 he reads the blocked metrics, runs `python -m lab9.trace_case` on a failing claim and seed, and fixes the agent.
   He does not loosen `config/metric_spec.yaml` to make a run pass: on the same eval-set version thresholds may only get stricter.
@@ -62,3 +65,112 @@ Every number below is copied from a report written by `lab9.eval` and `lab9.gate
   - Nothing was measured on real users.
 - **When to raise the eval-set version:** when an item is added or changed (for example a new item built from a trace case with `provenance.from_trace`, or the v2 adversarial pack).
   That changes the eval-set SHA, so the baseline must be re-run on `main`, and the metric spec version is raised if a metric or threshold changes.
+
+## Eval set v2 (M5, 18/11/2026)
+
+- **Eval set:** v2 = the 14 v1 items plus the instructor's 14-claim adversarial pack, 28 items x 5 seeds = 140 trials per run, sha `08f5303cb25f`, spec `config/metric_spec_v2.yaml` (version 2.0).
+  Baseline `E-swarm-20261118-08f5` (`reports/baseline_v2.json`).
+- **Mechanism to failure mode** (`config/fm_map.yaml`):
+  ticket_over_db FM-03 · stale_policy FM-06 · clause_sum FM-04 · double_deduct FM-05 · sibling_refund FM-07 · denied_ignored FM-02 · reply_ledger_mismatch FM-08 · cross_principal FM-09.
+  Items per failure mode in v2: FM-02 4, FM-03 3, FM-04 10, FM-05 5, FM-06 3, FM-07 5, FM-08 9, FM-09 3 (FM-01 on all 14 v1 items).
+  FM-03, FM-06 and FM-09 sit exactly at the minimum of 3, so each is a thin sample, not a trend.
+  FM-09 is the first mode that the public claims did not exercise; all 3 of its items come from the pack.
+- **Slices** (tags come from the label, never from the agent's output):
+  money_movement 12 items, adversarial 14, denial 11, escalation 4.
+- **Floors come from the measured baseline**, not from round numbers.
+  The reference swarm trusts the ticket on seed 55, so its baseline is 1.0 on money_movement, 0.9857 on adversarial, 0.9455 on denial and 1.0 on escalation.
+  A floor above the baseline would block the baseline itself, so denial is 0.90 and adversarial is 0.95.
+  money_movement was first 0.95 and was tightened to 0.97 in M7 (ratchet: stricter is allowed).
+
+| Slice | Baseline | Floor | Blocking |
+|---|---|---|---|
+| money_movement | 1.0 | 0.97 (0.95 until M7, see below) | yes |
+| adversarial | 0.9857 | 0.95 | yes |
+| denial | 0.9455 | 0.90 | yes |
+| escalation | 1.0 | 0.90 | yes |
+
+- **Which slice catches which bug** (gate output on v2):
+
+| Variant | Overall pass_rate | Verdict | Blocked by |
+|---|---|---|---|
+| fixed, honest_refactor | 1.0 | merge | nothing |
+| slice_regression | 0.9357 (floor 0.85, CI [-0.121, +0.029] touches 0) | **block** | `slice:money_movement/pass_rate` (0.85), `slice:adversarial/pass_rate` (0.9143) |
+| flaky_regression | 0.9143 | block | `pass_rate`, `slice:money_movement/pass_rate` (0.8667), `slice:adversarial/pass_rate` (0.9286) |
+| seeded_regression | 0.6429 | block | all metric gates plus money_movement, adversarial and denial |
+
+  `slice_regression` is the case the overall gate misses: its average stays above the floor and the CI includes 0.
+  On `money_movement` the paired CI ends at +0.000, so it cannot block either; only the floor of 0.95 does.
+  Mutation scorecard (`lab9.mutation`, before M6 and M7): 3 of 3 regressions blocked, 0 false alarms.
+- **Limits of this version:**
+  - A bug that appears on only 1 of 3 seeds (`rare`) is not stably detectable with 5 seeds: one failing seed moves a per-item mean by 0.2, which is inside the sampling noise of 14 to 28 items.
+    I did not lower any threshold to make the gate catch it.
+  - The `escalation` slice has 4 items, so one failing trial moves it by 0.05; its floor is 0.90.
+  - The three slice floors are tuned to the public variants.
+    A hidden slice regression in a slice I do not gate (for example a new tag) would pass; the 0.95 floors leave about 3.5 points of room above 1.0 minus noise on the adversarial slice.
+
+## Noise and reliability (M6, 18/11/2026)
+
+- **A/A run** (`python -m lab9.mutation --spec config/metric_spec_v2.yaml --aa 66,77,88,99,110`): the reference swarm on a second seed set against the spec seeds.
+  Every metric differs by +0.0000 (`pass_rate` 0.9786 on both, `pass_hat_5` 0.8929 on both, `cost_per_success` 50.8077 on both).
+  Both seed sets contain exactly one seed with `seed % 5 == 0`, the reference swarm's built-in weakness, so the structure is identical.
+- **Why the noise band is 0 here and not with a real model:** MockLLM is deterministic, so the same agent on different seeds only changes through the one coded weakness.
+  A real LLM samples, so two runs of the same agent give different pass rates.
+  The A/A band is then above 0, and a floor inside that band blocks honest PRs at random (it fails on luck, not on a regression).
+  The floor must sit below the baseline by more than the noise band, and still above what a real regression scores.
+  I have no measured real-model band, so I do not claim one; I only know the band here is 0 and the floor must be re-chosen when the model changes.
+- **`pass_at_k` and `pass_hat_k`** (n = 5 seeds per item, c of them passing, k drawn without replacement):
+  `pass@k = 1 - C(n-c, k) / C(n, k)` is the chance that at least one of k draws passes, and `pass^k = C(c, k) / C(n, k)` is the chance that all k pass.
+  `pass^k <= pass@1 <= pass@k` always.
+  `pass^5` is the strict reliability number: one failing seed out of five makes an item score 0.
+  Baseline, mean over 28 items: `pass_at_1` 0.9786, `pass_hat_1` 0.9786, `pass_at_3` 1.0, `pass_hat_3` 0.9357, `pass_at_5` 1.0, `pass_hat_5` 0.8929.
+  The gap between `pass_at_5` (1.0) and `pass_hat_5` (0.8929) is exactly the 3 items that fail on seed 55.
+- **Floor for `pass_hat_5`:** 0.80, blocking.
+  It sits 0.09 under the baseline (about 2 to 3 items) and well above a 1-seed-in-5 bug.
+
+| Variant | `pass_hat_5` | Verdict on this metric |
+|---|---|---|
+| baseline `swarm` against itself | 0.8929 | ok, merge |
+| fixed, honest_refactor | 1.0 | ok, merge |
+| slice_regression | 0.8929 | ok (caught by the money_movement and adversarial slices) |
+| flaky_regression (rounding bug on 1 seed in 5) | 0.5714 | **BLOCK** |
+| seeded_regression | 0.6429 | BLOCK |
+
+  `flaky_regression` is also blocked by the mean `pass_rate` (CI [-0.114, -0.014]), but that CI is narrow and depends on how many items the bug touches.
+  `pass_hat_5` blocks it directly: one flaky seed zeroes every item it touches.
+- **Mutation scorecard after M6:** 3 of 3 regressions blocked, 0 false alarms.
+- **Limit that remains:** a bug that appears on 1 of 3 seeds out of only 5 is not detectable in a stable way; with 5 seeds `pass_hat_5` moves in steps of 1/28 per item, and one lucky seed can hide it.
+  I did not lower the floor to make the gate catch it.
+
+## Gate integrity and anti-gaming (M7, 18/11/2026)
+
+- **What the gate refuses to compare** (`gate.integrity_check`, each problem prints as `INTEGRITY ...` and blocks with `integrity`):
+  NaN or inf in a metric or a row; a row count different from items x seeds; duplicate (item, seed) rows; an (item, seed) set, manifest items or seeds different from the baseline's;
+  `evaluator_failures` on any run, even a green one; a graded metric that is `None` or missing in a row, or missing from the report while the baseline has it;
+  a stored metric that is not what its rows add up to (a hand-edited number); an item whose slice tags differ from the baseline's;
+  and a `labels_sha` different from the baseline's.
+- **Labels hash:** the manifest now records `labels_sha` next to `eval_set_sha`, so changing the expected answers in `labels_v*.json` without a new baseline blocks the PR.
+  Both hashes normalise CRLF to LF (see the Windows line-ending note above).
+- **Ratchet** (`--base-spec`, only on the same eval-set version): a metric or slice may not disappear, stop blocking, change kind, lose `no_significant_drop` or a threshold key, lower a `min` or raise a `max` / `max_increase`; the bootstrap `confidence` may not rise.
+  Tightening and adding metrics are allowed.
+
+| Trap (`lab9.traps`) | Blocked by |
+|---|---|
+| evaluator_errors_as_nan | INTEGRITY: 9 rows without a value for `refund_amount_correct` and `pass_rate` |
+| dropped_failing_rows | INTEGRITY: 131 rows against 140, 9 (item, seed) pairs missing from the baseline's set |
+| cherry_picked_seeds | INTEGRITY: 84 pairs missing, manifest seeds [22, 44] against the baseline's five |
+| loosened_spec | INTEGRITY ratchet: every `min` lowered, `no_significant_drop` dropped, slices removed |
+
+  `python -m lab9.traps` exits 0.
+  Scorecard: `lab9.mutation` 3 of 3 regressions blocked, 0 false alarms; the baseline against itself merges; A/A delta is 0.
+  The tests are in `tests/test_lab9_integrity.py` (one test per rule).
+- **Hidden-style variants:** `python scripts/probe_variants.py` runs variants that are not in `lab9.variants` through the real v2 gate.
+  Blocked: `quiet_override` (the FM-03 bug that leaves no `model_override` event; the ledger metric `refund_amount_correct` catches it), `round_down`, `stale_clause`, `sibling_refund`, `misreport` on every seed, `intermittent` ticket_trust, `intermittent` pre_deducted, `rare` sum_parts and `leaky_trace`.
+  Merged: `paraphrase`, `extra_lookup` and both with `intermittent`.
+- **What could still get through:**
+  - A bug that swaps in exactly as many failures as the baseline already has.
+    `rare quiet_override` (bug on seed 33 only) on top of `fixed` fails E-002, E-101 and E-102 at seed 33, the same three items the reference swarm fails at seed 55, so every aggregate equals the baseline's and the gate merges it.
+    Only a per-trial "pass became fail" check would see it, and that would flag a real LLM's ordinary run-to-run variation, so I did not add it as a blocking rule.
+  - A regression confined to a slice that no spec entry gates (a slice I have not defined).
+  - A report made by another script that recomputes `metrics` and `labels_sha` consistently with doctored rows, and a baseline replaced on `main`: the gate trusts the baseline.
+  - Edits to graders, variants or the trap builder themselves; that is a code-review matter (and a rubric deduction), not something the report can reveal.
+  - An exception that the harness swallows without recording an evaluator failure would not be seen.

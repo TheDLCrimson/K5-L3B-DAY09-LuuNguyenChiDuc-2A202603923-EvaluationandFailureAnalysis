@@ -4,6 +4,7 @@
   "manifest": {
     "eval_set": "data/eval/eval_set_v1.jsonl",
     "eval_set_sha": "44ea318de7f0",
+    "labels_sha": "5c39cb294873",
     "items": 14,
     "seeds": [
       11,
@@ -27,6 +28,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.3
     },
     {
@@ -39,6 +41,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.3
     },
     {
@@ -51,6 +54,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.3
     },
     {
@@ -63,6 +67,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.3
     },
     {
@@ -75,6 +80,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.3
     },
     {
@@ -87,6 +93,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.2
     },
     {
@@ -99,6 +106,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.2
     },
     {
@@ -111,6 +119,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.2
     },
     {
@@ -123,6 +132,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.2
     },
     {
@@ -135,6 +145,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.2
     },
     {
@@ -147,6 +158,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.34
     },
     {
@@ -159,6 +171,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.34
     },
     {
@@ -171,6 +184,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.34
     },
     {
@@ -183,6 +197,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.34
     },
     {
@@ -195,6 +210,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.34
     },
     {
@@ -207,6 +223,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 12.28
     },
     {
@@ -219,6 +236,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 12.28
     },
     {
@@ -231,6 +249,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 12.28
     },
     {
@@ -243,6 +262,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 12.28
     },
     {
@@ -255,6 +275,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 12.28
     },
     {
@@ -267,6 +288,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 42.2
     },
     {
@@ -279,6 +301,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 42.2
     },
     {
@@ -291,6 +314,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 42.2
     },
     {
@@ -303,6 +327,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 42.2
     },
     {
@@ -315,6 +340,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 42.2
     },
     {
@@ -327,6 +353,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.36
     },
     {
@@ -339,6 +366,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.36
     },
     {
@@ -351,6 +379,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.36
     },
     {
@@ -363,6 +392,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.36
     },
     {
@@ -375,6 +405,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.36
     },
     {
@@ -387,6 +418,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.26
     },
     {
@@ -399,6 +431,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.26
     },
     {
@@ -411,6 +444,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.26
     },
     {
@@ -423,6 +457,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.26
     },
     {
@@ -435,6 +470,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.26
     },
     {
@@ -447,6 +483,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.26
     },
     {
@@ -459,6 +496,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.26
     },
     {
@@ -471,6 +509,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.26
     },
     {
@@ -483,6 +522,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.26
     },
     {
@@ -495,6 +535,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.26
     },
     {
@@ -507,6 +548,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.28
     },
     {
@@ -519,6 +561,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.28
     },
     {
@@ -531,6 +574,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.28
     },
     {
@@ -543,6 +587,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.28
     },
     {
@@ -555,6 +600,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.28
     },
     {
@@ -567,6 +613,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.22
     },
     {
@@ -579,6 +626,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.22
     },
     {
@@ -591,6 +639,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.22
     },
     {
@@ -603,6 +652,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.22
     },
     {
@@ -615,6 +665,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.22
     },
     {
@@ -627,6 +678,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.3
     },
     {
@@ -639,6 +691,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.3
     },
     {
@@ -651,6 +704,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.3
     },
     {
@@ -663,6 +717,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.3
     },
     {
@@ -675,6 +730,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.3
     },
     {
@@ -687,6 +743,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.22
     },
     {
@@ -699,6 +756,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.22
     },
     {
@@ -711,6 +769,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.22
     },
     {
@@ -723,6 +782,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.22
     },
     {
@@ -735,6 +795,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.22
     },
     {
@@ -747,6 +808,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.38
     },
     {
@@ -759,6 +821,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.38
     },
     {
@@ -771,6 +834,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.38
     },
     {
@@ -783,6 +847,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.38
     },
     {
@@ -795,6 +860,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.38
     },
     {
@@ -807,6 +873,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.42
     },
     {
@@ -819,6 +886,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.42
     },
     {
@@ -831,6 +899,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.42
     },
     {
@@ -843,6 +912,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.42
     },
     {
@@ -855,6 +925,7 @@
       "refund_amount_correct": true,
       "pass_rate": true,
       "reply_matches_ledger": true,
+      "proposal_correct": true,
       "cost": 52.42
     }
   ],
@@ -866,6 +937,7 @@
     "refund_amount_correct": 1.0,
     "pass_rate": 1.0,
     "reply_matches_ledger": 1.0,
+    "proposal_correct": 1.0,
     "pass_5": 1.0,
     "cost_per_success": 48.7157
   }
