@@ -174,3 +174,35 @@ Every number below is copied from a report written by `lab9.eval` and `lab9.gate
   - A report made by another script that recomputes `metrics` and `labels_sha` consistently with doctored rows, and a baseline replaced on `main`: the gate trusts the baseline.
   - Edits to graders, variants or the trap builder themselves; that is a code-review matter (and a rubric deduction), not something the report can reveal.
   - An exception that the harness swallows without recording an evaluator failure would not be seen.
+
+## Bonus: three graders ported to Inspect AI (18/11/2026)
+
+- **What:** `ApprovalBypass`, `RefundAmountCorrect` and `ReplyMatchesLedger` from `lab9/graders.py` (pydantic-evals) are re-implemented as Inspect AI scorers in `src/lab9/inspect_port.py`.
+  The logic is rewritten from the same specification, not delegated to `lab9.graders`, so a match between the two is a cross-check and not a tautology.
+  Polarity is kept: 1.0 on `approval_bypass` is a violation, 1.0 on the other two is a good trial.
+- **How it runs without a key:** each Inspect AI sample carries the stored trial and its label in its metadata, the solver does nothing, and `mockllm/model` stands in for the model.
+  There is no model call and no network call.
+  Run it with `cd src && pip install -r requirements-bonus.txt && python scripts/compare_inspect.py` (about 4.5 minutes, almost all of it building the trials).
+- **Why Inspect AI and not DeepEval:** DeepEval installs `posthog` telemetry that is on by default and most of its metrics need an LLM key.
+- **Result** (`scripts/compare_inspect.py`, exit 0): 2,240 trials = 16 shapes x 28 eval-set-v2 items x 5 seeds, every single-bug variant plus the public ones.
+
+| Grader | Trials | Verdict and reason identical in both frameworks | Violating or bad trials |
+|---|---|---|---|
+| approval_bypass | 2240 | 2240 | 55 |
+| refund_amount_correct | 2240 | 2240 | 202 |
+| reply_matches_ledger | 2240 | 2240 | 120 |
+
+  The agreement is not trivial: each grader fires on a large share of trials and stays quiet on the rest.
+  The reason strings are compared too, not just the pass or fail value.
+- **Against the committed report:** the Inspect AI aggregate on the reference `swarm` equals `reports/baseline_v2.json` for all three (`approval_bypass` 0, `refund_amount_correct` 0.9786, `reply_matches_ledger` 1.0).
+- **Tests:** `tests/test_lab9_inspect_port.py` has 11 hand-built edge cases times 3 graders plus two sanity checks (35 tests).
+  The module is skipped when `inspect-ai` is not installed.
+- **Limits:**
+  - CI does not run this.
+    `requirements-lab9.txt` and the workflow are untouched on purpose, so the existing green runs stay as they are; `inspect-ai` declares 116 requirements (many are optional extras) and added 34 packages to the shared lock file.
+    The evidence is the script and the numbers above.
+  - Agreement shows the two implementations are consistent, not that the specification is right: a misreading of the spec would sit in both.
+  - It replays stored trials, so it tests the graders, not an agent run under Inspect AI.
+  - Only 3 of the 6 graders are ported.
+  - `inspect-ai` is pinned to 0.3.291: 0.3.286 and 0.3.288 fail to import with `agent-client-protocol` 1.0 (`acp.helpers` is missing).
+  - Adding it to the shared root environment moved two already-locked packages down (`fsspec` 2026.9.0 to 2026.6.0, `python-dateutil` 4.0.0 to 2.9.0.post0); the earlier labs' imports and the Day 8 and Day 9 tests still pass.
