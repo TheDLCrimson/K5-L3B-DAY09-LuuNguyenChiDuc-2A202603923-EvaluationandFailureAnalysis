@@ -74,7 +74,7 @@ def build(source: Path = SOURCE) -> tuple[int, int]:
             "failure_modes": FAILURE_MODES_V1[claim["claim_id"]],
             "provenance": {"source": "lab8_public", "matrix_id": claim.get("matrix_id"),
                            "from_trace": None, "generator": None,
-                           "label_by": "lab8_matrix", "checked_by": None},
+                           "label_by": "lab8_matrix", "checked_by": "LuuNguyenChiDuc"},
             "split": "regression",
             "eval_set_version": VERSION,
         })

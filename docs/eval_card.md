@@ -3,13 +3,14 @@
 This card goes with each report and is reused on Day 10.
 Every number below is copied from a report written by `lab9.eval` and `lab9.gate`; none is typed from memory.
 
-- **Run ID / eval set SHA:** baseline `E-swarm-20261118-44ea`, eval set `44ea318de7f0`.
-  The PR-side runs are `E-fixed-20261118-44ea` and `E-seeded_regression-20261118-44ea`, on the same eval set.
-- **Versions:** eval set v1 (sha `44ea318de7f0`) · metric_spec 1.0 (v1) and 2.0 (v2) · seeds 11/22/33/44/55 · MockLLM.
+- **Run ID / eval set SHA:** baseline `E-swarm-20261118-c515`, eval set `c5151d6db6ae`.
+  The PR-side runs are `E-fixed-20261118-c515` and `E-seeded_regression-20261118-c515`, on the same eval set.
+- **Versions:** eval set v1 (sha `c5151d6db6ae`) · metric_spec 1.0 (v1) and 2.0 (v2) · seeds 11/22/33/44/55 · MockLLM.
   Every report in `src/reports/` reproduces byte for byte with the commands in this card (checked on 18/11/2026), so the code state is the commit that carries the reports.
 - **Eval set:** v1, 14 items x 5 seeds = 70 trials per run, source `lab8_public`.
   Labels live in `data/eval/labels_v1.json`, never inline in the items.
   Every item carries `failure_modes` from `docs/failure_taxonomy.md` (FM-01 on all 14 because each claim has a canary secret).
+  Provenance: `label_by: lab8_matrix` (labels come from the Lab 8 matrix) and `checked_by: LuuNguyenChiDuc` (the failure-mode mapping `FAILURE_MODES_V1` was reviewed and agreed on 18/11/2026); the 14 adversarial-pack items carry `label_by: instructor`, `checked_by: fixed_shape_replay`.
 - **Metrics and thresholds** (from `config/metric_spec.yaml`):
 
 | Metric | Kind | Threshold | Blocking |
@@ -68,8 +69,8 @@ Every number below is copied from a report written by `lab9.eval` and `lab9.gate
 
 ## Eval set v2 (M5, 18/11/2026)
 
-- **Eval set:** v2 = the 14 v1 items plus the instructor's 14-claim adversarial pack, 28 items x 5 seeds = 140 trials per run, sha `08f5303cb25f`, spec `config/metric_spec_v2.yaml` (version 2.0).
-  Baseline `E-swarm-20261118-08f5` (`reports/baseline_v2.json`).
+- **Eval set:** v2 = the 14 v1 items plus the instructor's 14-claim adversarial pack, 28 items x 5 seeds = 140 trials per run, sha `57cd97dd5b56`, spec `config/metric_spec_v2.yaml` (version 2.0).
+  Baseline `E-swarm-20261118-57cd` (`reports/baseline_v2.json`).
 - **Mechanism to failure mode** (`config/fm_map.yaml`):
   ticket_over_db FM-03 · stale_policy FM-06 · clause_sum FM-04 · double_deduct FM-05 · sibling_refund FM-07 · denied_ignored FM-02 · reply_ledger_mismatch FM-08 · cross_principal FM-09.
   Items per failure mode in v2: FM-02 4, FM-03 3, FM-04 10, FM-05 5, FM-06 3, FM-07 5, FM-08 9, FM-09 3 (FM-01 on all 14 v1 items).
