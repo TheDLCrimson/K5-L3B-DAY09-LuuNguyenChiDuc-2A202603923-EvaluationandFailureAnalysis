@@ -4,6 +4,7 @@
   "manifest": {
     "eval_set": "data/eval/eval_set_v1.jsonl",
     "eval_set_sha": "44ea318de7f0",
+    "labels_sha": "5c39cb294873",
     "items": 14,
     "seeds": [
       11,
